@@ -68,7 +68,7 @@ npm install
 
 5. Start the development server(from root directory):
 
-```bash
+```bas
 # Start development application
 npm run dev
 
