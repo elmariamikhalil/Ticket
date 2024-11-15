@@ -14,6 +14,9 @@ const ticketSchema = mongoose.Schema(
     },
     material: {
       type: String,
+      required: function () {
+        return this.category === "Material";
+      },
       required: [true, "Please select a material"],
       enum: [
         "Laptop",
@@ -28,12 +31,15 @@ const ticketSchema = mongoose.Schema(
     },
     envirement: {
       type: String,
+      required: function () {
+        return this.category === "Envirement";
+      },
       required: [true, "Please select an envirement"],
-      enum: ["teams", "Outlook", "Browser", "Excel", "Other"],
+      enum: ["Teams", "Outlook", "Browser", "Excel", "Other"],
     },
     description: {
       type: String,
-      required: [true, "Please enter a description of the issue"],
+      required: [false, "Please enter a description of the issue"],
     },
     status: {
       type: String,
