@@ -176,6 +176,11 @@ h3 {
   border: none;
 }
 
+.btn-warning {
+  background: rgb(1, 88, 15);
+  border: none;
+}
+
 .btn-back {
   width: 150px;
   margin-bottom: 20px;

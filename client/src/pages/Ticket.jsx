@@ -1,17 +1,21 @@
 import { useSelector, useDispatch } from "react-redux";
-import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
+import {
+  getTicket,
+  closeTicket,
+  acceptTicket,
+} from "../features/tickets/ticketSlice";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-// import { getNotes, createNote } from '../features/notes/notesSlice'
-// import NoteItem from '../components/NoteItem'
+import { getNotes, createNote } from '../features/notes/notesSlice'
+import NoteItem from '../components/NoteItem'
 
 function Ticket() {
   const { ticket, isLoading, isError } = useSelector((state) => state.ticket);
-  // const {notes, isLoading: notesIsLoading} = useSelector(state=> state.notes)
+  const {notes, notesIsLoading} = useSelector(state=> state.notes)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,10 +29,16 @@ function Ticket() {
     toast.success("Ticket Closed Successfully");
     navigate("/tickets");
   };
+  const onTicketAccept = (e) => {
+    e.preventDefault();
+    dispatch(acceptTicket(ticketId));
+    toast.success("Ticket Accepted");
+    navigate("/tickets");
+  };
 
   useEffect(() => {
     dispatch(getTicket(ticketId)).unwrap().catch(toast.error);
-    // dispatch(getNotes(ticketId)).unwrap().catch(toast.error)
+    dispatch(getNotes(ticketId)).unwrap().catch(toast.error)
   }, [ticketId, dispatch]);
 
   if (isLoading) {
@@ -61,19 +71,32 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
-        {/* <h2>Notes</h2> */}
+         <h2>Notes</h2> 
       </header>
-      {/* 
-      {notes ? (
+      
+      {Array.isArray.notes ? (
         notes.map((note) => <NoteItem key={note._id} note={note} />)
       ) : (
         <Spinner />
-      )} */}
+      )} 
 
-      {ticket.status !== "closed" && (
+      {ticket.status === "pending" && (
         <button className="btn btn-block btn-danger" onClick={onTicketClose}>
           Close Ticket
         </button>
+      )}
+      {ticket.status !== "closed" && ticket.status !== "pending" && (
+        <>
+          <button className="btn btn-block btn-danger" onClick={onTicketClose}>
+            Close Ticket
+          </button>
+          <button
+            className="btn btn-block btn-warning"
+            onClick={onTicketAccept}
+          >
+            Accept Ticket
+          </button>
+        </>
       )}
     </div>
   );

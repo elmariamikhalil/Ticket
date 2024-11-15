@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import ticketService from './ticketService';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import ticketService from "./ticketService";
 
 const initialState = {
   tickets: [],
@@ -7,11 +7,12 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: ''
+  message: "",
 };
 
 // Create new Ticket
-export const createTicket = createAsyncThunk('tickets/create',
+export const createTicket = createAsyncThunk(
+  "tickets/create",
   async (ticketData, thunkAPI) => {
     console.log(ticketData);
     try {
@@ -19,64 +20,105 @@ export const createTicket = createAsyncThunk('tickets/create',
       return await ticketService.createTicket(ticketData, token);
     } catch (error) {
       console.log(error);
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
 // Get Tickets
-export const getTickets = createAsyncThunk('tickets/getAll',
+export const getTickets = createAsyncThunk(
+  "tickets/getAll",
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await ticketService.getTickets(token);
     } catch (error) {
       console.log(error);
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
 // Get Ticket
-export const getTicket = createAsyncThunk('tickets/getOne',
+export const getTicket = createAsyncThunk(
+  "tickets/getOne",
   async (ticketId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await ticketService.getTicket(ticketId, token);
     } catch (error) {
       console.log(error);
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
 // Close Ticket
-export const closeTicket = createAsyncThunk('tickets/close',
+export const closeTicket = createAsyncThunk(
+  "tickets/close",
   async (ticketId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await ticketService.closeTicket(ticketId, token);
     } catch (error) {
       console.log(error);
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
-
+// Accept Ticket
+export const acceptTicket = createAsyncThunk(
+  "tickets/accept",
+  async (ticketId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await ticketService.acceptTicket(ticketId, token);
+    } catch (error) {
+      console.log(error);
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const ticketSlice = createSlice({
-  name: 'ticket',
+  name: "ticket",
   initialState,
   reducers: {
     reset: (state) => {
       state.isError = false;
       state.isSuccess = false;
-      state.message = '';
+      state.message = "";
       state.isLoading = false;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -120,9 +162,13 @@ export const ticketSlice = createSlice({
       })
       .addCase(closeTicket.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.tickets = state.tickets.map((ticket) => ticket._id === action.payload._id ? { ...ticket, status: 'closed' } : ticket);
+        state.tickets = state.tickets.map((ticket) =>
+          ticket._id === action.payload._id
+            ? { ...ticket, status: "closed" }
+            : ticket
+        );
       });
-  }
+  },
 });
 
 export const { reset } = ticketSlice.actions;
