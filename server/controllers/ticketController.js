@@ -1,139 +1,146 @@
-const asyncHandler = require('express-async-handler')
-const User = require('../models/userModel')
-const Tickets = require('../models/ticketModel')
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
+const Tickets = require("../models/ticketModel");
 
 // @desc Get iser tickets
 // @route GET /api/tickets
 // @access Private
-const getTickets = asyncHandler(async (req,res)=>{
+const getTickets = asyncHandler(async (req, res) => {
   // get user using id and token
-  const user = await User.findById(req.user.id)
+  const user = await User.findById(req.user.id);
 
-  if(!user){
-    res.status(400)
-    throw new Error('User not found')
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
   }
 
-  let tickets ;
-  if(user.isAdmin){
-    tickets = await Tickets.find()
-  }else{
-    tickets = await Tickets.find({user:req.user.id})
+  let tickets;
+  if (user.isAdmin) {
+    tickets = await Tickets.find();
+  } else {
+    tickets = await Tickets.find({ user: req.user.id });
   }
-  res.status(200).json(tickets)
-})
+  res.status(200).json(tickets);
+});
 
 // @desc Get iser tickets
 // @route GET /api/tickets/:id
 // @access Private
-const getTicket = asyncHandler(async (req,res)=>{
+const getTicket = asyncHandler(async (req, res) => {
   // get user using id and token
-  const user = await User.findById(req.user.id)
-  if(!req.user){
-    res.status(400)
-    throw new Error('User not found')
+  const user = await User.findById(req.user.id);
+  if (!req.user) {
+    res.status(400);
+    throw new Error("User not found");
   }
 
-  const ticket = await Tickets.findById(req.params.id)
+  const ticket = await Tickets.findById(req.params.id);
 
-  if(!ticket){
-    res.status(404)
-    throw new Error('Ticket not found')
+  if (!ticket) {
+    res.status(404);
+    throw new Error("Ticket not found");
   }
 
-  if(ticket.user.toString() !== req.user.id && !user.isAdmin){
-    res.status(401)
-    throw new Error('Not authorized')
+  if (ticket.user.toString() !== req.user.id && !user.isAdmin) {
+    res.status(401);
+    throw new Error("Not authorized");
   }
 
-  res.status(200).json(ticket)
-})
+  res.status(200).json(ticket);
+});
 
 // @desc Create a new ticket
 // @route POST /api/tickets
 // @access Private
-const createTicket = asyncHandler(async (req,res)=>{
-  const {product, description} = req.body
+const createTicket = asyncHandler(async (req, res) => {
+  const { category, description, materialOptions, envirementOptions } =
+    req.body;
 
-  if(!product || !description){
-    res.status(400)
-    throw new Error('Please add product name and description')
+  if (!category || !materialOptions) {
+    res.status(400);
+    throw new Error("Please add category and description");
   }
 
   // get user using id and token
-  const user = await User.findById(req.user.id)
+  const user = await User.findById(req.user.id);
 
-  if(!user){
-    res.status(400)
-    throw new Error('User not found')
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
   }
 
   const ticket = await Tickets.create({
-    product,
+    category,
     description,
+    materialOptions: category === "Material" ? materialOptions : undefined,
+    envirementOptions:
+      category === "Envirement" ? envirementOptions : undefined,
     user: req.user.id,
-    status: 'new'
-  })
+    status: "new",
+  });
 
-  res.status(201).json(ticket)
-})
+  res.status(201).json(ticket);
+});
 
 // @desc Delete user tickets
 // @route DELETE /api/tickets/:id
 // @access Private
-const deleteTicket = asyncHandler(async (req,res)=>{
+const deleteTicket = asyncHandler(async (req, res) => {
   // get user using id and token
-  const user = await User.findById(req.user.id)
-  if(!req.user){
-    res.status(400)
-    throw new Error('User not found')
+  const user = await User.findById(req.user.id);
+  if (!req.user) {
+    res.status(400);
+    throw new Error("User not found");
   }
 
-  const ticket = await Tickets.findById(req.params.id)
+  const ticket = await Tickets.findById(req.params.id);
 
-  if(!ticket){
-    res.status(404)
-    throw new Error('Ticket not found')
+  if (!ticket) {
+    res.status(404);
+    throw new Error("Ticket not found");
   }
 
-  if(ticket.user.toString() !== req.user.id){
-    res.status(401)
-    throw new Error('Not authorized')
+  if (ticket.user.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("Not authorized");
   }
 
-  await ticket.deleteOne({id: ticket.id})
+  await ticket.deleteOne({ id: ticket.id });
 
-  res.status(200).json({success: 'true'})
-})
+  res.status(200).json({ success: "true" });
+});
 
 // @desc Update user tickets
 // @route PUT /api/tickets/:id
 // @access Private
-const updateTicket = asyncHandler(async (req,res)=>{
+const updateTicket = asyncHandler(async (req, res) => {
   // get user using id and token
-  const user = await User.findById(req.user.id)
-  if(!req.user){
-    res.status(400)
-    throw new Error('User not found')
+  const user = await User.findById(req.user.id);
+  if (!req.user) {
+    res.status(400);
+    throw new Error("User not found");
   }
 
-  const ticket = await Tickets.findById(req.params.id)
+  const ticket = await Tickets.findById(req.params.id);
 
-  if(!ticket){
-    res.status(404)
-    throw new Error('Ticket not found')
+  if (!ticket) {
+    res.status(404);
+    throw new Error("Ticket not found");
   }
 
-  if(ticket.user.toString() !== req.user.id){
-    res.status(401)
-    throw new Error('Not authorized')
+  if (ticket.user.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("Not authorized");
   }
 
-  const updatedTicket = await Tickets.findByIdAndUpdate(req.params.id, req.body,{new:true})
+  const updatedTicket = await Tickets.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
 
-  res.status(200).json(updatedTicket)
-})
-
+  res.status(200).json(updatedTicket);
+});
 
 module.exports = {
   createTicket,
@@ -141,4 +148,4 @@ module.exports = {
   getTicket,
   deleteTicket,
   updateTicket,
-}
+};
