@@ -14,8 +14,12 @@ const getTickets = asyncHandler(async (req,res)=>{
     throw new Error('User not found')
   }
 
-  const tickets = await Tickets.find({user:req.user.id})
-
+  let tickets ;
+  if(user.isAdmin){
+    tickets = await Tickets.find()
+  }else{
+    tickets = await Tickets.find({user:req.user.id})
+  }
   res.status(200).json(tickets)
 })
 
@@ -37,7 +41,7 @@ const getTicket = asyncHandler(async (req,res)=>{
     throw new Error('Ticket not found')
   }
 
-  if(ticket.user.toString() !== req.user.id){
+  if(ticket.user.toString() !== req.user.id && !user.isAdmin){
     res.status(401)
     throw new Error('Not authorized')
   }
