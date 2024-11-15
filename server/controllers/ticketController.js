@@ -53,10 +53,9 @@ const getTicket = asyncHandler(async (req, res) => {
 // @route POST /api/tickets
 // @access Private
 const createTicket = asyncHandler(async (req, res) => {
-  const { category, description, materialOptions, envirementOptions } =
-    req.body;
+  const { category, description, material, envirement } = req.body;
 
-  if (!category || !materialOptions) {
+  if (!category || !material) {
     res.status(400);
     throw new Error("Please add category and description");
   }
@@ -72,9 +71,8 @@ const createTicket = asyncHandler(async (req, res) => {
   const ticket = await Tickets.create({
     category,
     description,
-    materialOptions: category === "Material" ? materialOptions : undefined,
-    envirementOptions:
-      category === "Envirement" ? envirementOptions : undefined,
+    material: category === "Material" ? material : undefined,
+    envirement: category === "Envirement" ? envirement : undefined,
     user: req.user.id,
     status: "new",
   });

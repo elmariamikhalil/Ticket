@@ -9,6 +9,8 @@ import BackButton from "../components/BackButton";
 function NewTicket() {
   const user = useSelector((state) => state.auth.user);
   const [category, setCategory] = useState("Material");
+  const [material, setMaterial] = useState("Laptop");
+  const [envirement, setEnvirement] = useState("Teams");
   const [description, setDescription] = useState("");
 
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ function NewTicket() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(createTicket({ category, description }));
+    dispatch(createTicket({ category, material, envirement, description }));
   };
 
   if (isLoading) {
@@ -90,8 +92,13 @@ function NewTicket() {
           </div>
           {category === "Material" && (
             <div className="form-group">
-              <label htmlFor="materialOptions">Material Options</label>
-              <select name="materialOptions" id="materialOptions">
+              <label htmlFor="material">Material Options</label>
+              <select
+                name="material"
+                id="material"
+                value={material}
+                onChange={(e) => setMaterial(e.target.value)}
+              >
                 <option value="Laptop">Laptop</option>
                 <option value="Screen">Screen</option>
                 <option value="Headset">Headset</option>
@@ -106,8 +113,13 @@ function NewTicket() {
 
           {category === "Envirement" && (
             <div className="form-group">
-              <label htmlFor="envirementOptions">Envirement Options</label>
-              <select name="envirementOptions" id="envirementOptions">
+              <label htmlFor="envirement">Envirement Options</label>
+              <select
+                name="envirement"
+                id="envirement"
+                value={envirement}
+                onChange={(e) => setEnvirement(e.target.value)}
+              >
                 <option value="Teams">Teams</option>
                 <option value="Outlook">Outlook</option>
                 <option value="Browser">Browser</option>

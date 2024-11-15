@@ -9,12 +9,12 @@ const ticketSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      required: [true, "Please select a product"],
+      required: [true, "Please select a category"],
       enum: ["Material", "Envirement", "Other"],
     },
-    Material: {
+    material: {
       type: String,
-      required: [true, "Please select a product"],
+      required: [true, "Please select a material"],
       enum: [
         "Laptop",
         "Screen",
@@ -26,9 +26,9 @@ const ticketSchema = mongoose.Schema(
         "Network",
       ],
     },
-    Envirement: {
+    envirement: {
       type: String,
-      required: [true, "Please select a product"],
+      required: [true, "Please select an envirement"],
       enum: ["teams", "Outlook", "Browser", "Excel", "Other"],
     },
     description: {
@@ -38,7 +38,7 @@ const ticketSchema = mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enume: ["new", "open", "closed"],
+      enum: ["new", "open", "closed"],
       default: "new",
     },
   },
